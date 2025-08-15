@@ -152,6 +152,26 @@ function closestColor(rgb, palette) {
   return bestColor;
 }
 
+function drawGrid(canvas, cellSize) {
+  const ctx = canvas.getContext('2d');
+  ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+  ctx.lineWidth = 1;
+
+  for (let x = 0; x <= canvas.width; x += cellSize) {
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, canvas.height);
+    ctx.stroke();
+  }
+
+  for (let y = 0; y <= canvas.height; y += cellSize) {
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(canvas.width, y);
+    ctx.stroke();
+  }
+}
+
 document.getElementById('imageInput').addEventListener('change', e => {
   const file = e.target.files[0];
   if (!file) return;
@@ -173,7 +193,8 @@ document.getElementById('convertBtn').addEventListener('click', () => {
     img.onload = () => {
       const tempCanvas = document.createElement('canvas');
       const ctx = tempCanvas.getContext('2d');
-      tempCanvas.width = w; tempCanvas.height = h;
+      tempCanvas.width = w; 
+      tempCanvas.height = h;
       ctx.drawImage(img, 0, 0, w, h);
       const imageData = ctx.getImageData(0, 0, w, h);
       const data = imageData.data;
@@ -192,6 +213,9 @@ document.getElementById('convertBtn').addEventListener('click', () => {
       const displayCtx = displayCanvas.getContext('2d');
       displayCtx.imageSmoothingEnabled = false;
       displayCtx.drawImage(tempCanvas, 0, 0, displayCanvas.width, displayCanvas.height);
+
+      const cellSize = displayCanvas.width / w;
+      drawGrid(displayCanvas, cellSize);
     };
     img.src = e.target.result;
   };
