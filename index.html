@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WPLACE Pixel Converter</title>
+<style>
+  body {
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    margin: 0;
+    padding: 20px;
+    background: radial-gradient(circle at top left, #1e293b, #0f172a);
+    color: #f1f5f9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  h1 {
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+  .controls {
+    margin-bottom: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 20px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    max-width: 500px;
+  }
+  .controls label {
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .controls input,
+  .controls select,
+  .controls button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
+    background: rgba(255,255,255,0.1);
+    color: #f1f5f9;
+    outline: none;
+  }
+  .controls select {
+    background-color: rgba(255,255,255,0.15);
+    color: #f1f5f9;
+  }
+  .controls option {
+    color: #000;
+    background-color: #fff;
+  }
+  .controls button {
+    background: linear-gradient(90deg, #38bdf8, #3b82f6);
+    font-weight: 600;
+    transition: transform 0.1s ease, background 0.3s ease;
+  }
+  .controls button:hover {
+    transform: translateY(-1px);
+    background: linear-gradient(90deg, #0ea5e9, #2563eb);
+  }
+  .container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 1000px;
+  }
+  .preview-box {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1 / 1;
+    flex: 1 1 45%;
+    min-width: 250px;
+  }
+  canvas, img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 8px;
+    image-rendering: pixelated;
+  }
+  footer {
+    margin-top: 30px;
+    font-size: 12px;
+    color: #94a3b8;
+  }
+</style>
+</head>
+<body>
+<h1>WPLACE Pixel Converter</h1>
+<div class="controls">
+  <label>Palette:
+    <select id="paletteSelect">
+      <option value="free">Free Palette</option>
+      <option value="premium">Premium Palette</option>
+    </select>
+  </label>
+  <label>Image File:
+    <input type="file" id="imageInput" accept="image/*">
+  </label>
+  <label>Width (px): <input type="number" id="width" value="50"></label>
+  <label>Height (px): <input type="number" id="height" value="50"></label>
+  <button id="convertBtn">Convert</button>
+</div>
+<div class="container">
+  <div class="preview-box">
+    <img id="originalPreview" alt="Original">
+  </div>
+  <div class="preview-box">
+    <canvas id="canvas"></canvas>
+  </div>
+</div>
+<footer>© Hvskxr</footer>
+<script>
+const FREE_PALETTE = [
+  '#000000', '#3c3c3c', '#787878', '#d2d2d2', '#ffffff', '#600018', '#ed1c24', '#ff7f27', '#f6aa09', '#f9dd3b', '#fffabc', '#0eb968', '#13e67b', '#87ff5e', '#0c816e', '#10ae82', '#13e1be', '#60f7f2', '#28509e', '#4093e4', '#6b50f6', '#99b1fb', '#780c99', '#aa38b9', '#e09ff9', '#cb007a', '#ec1f80', '#f38da9', '#684634', '#95682a', '#f8b277', 'transparent'
+].map(hexToRGB);
+
+const PREMIUM_PALETTE = FREE_PALETTE.concat([
+  '#ffb6c1', '#add8e6', '#90ee90', '#ffa500', '#800080', '#808000', '#008080', '#ff4500', '#c71585', '#7fffd4', '#ff69b4', '#cd5c5c', '#40e0d0', '#1e90ff', '#f5f5dc', '#ffe4c4', '#ffefd5'
+].map(hexToRGB));
+
+function hexToRGB(hex) {
+  if (hex === 'transparent') return [0, 0, 0, 0];
+  const bigint = parseInt(hex.slice(1), 16);
+  return [(bigint >> 16) & 255, (bigint >> 8) & 255, bigint & 255];
+}
+
+function closestColor(rgb, palette) {
+  let minDist = Infinity, bestColor = rgb;
+  for (const color of palette) {
+    const dist = Math.hypot(rgb[0] - color[0], rgb[1] - color[1], rgb[2] - color[2]);
+    if (dist < minDist) {
+      minDist = dist;
+      bestColor = color;
+    }
+  }
+  return bestColor;
+}
+
+document.getElementById('imageInput').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => document.getElementById('originalPreview').src = ev.target.result;
+  reader.readAsDataURL(file);
+});
+
+document.getElementById('convertBtn').addEventListener('click', () => {
+  const file = document.getElementById('imageInput').files[0];
+  const w = parseInt(document.getElementById('width').value);
+  const h = parseInt(document.getElementById('height').value);
+  if (!file) return alert('Select an image file first.');
+
+  const palette = document.getElementById('paletteSelect').value === 'free' ? FREE_PALETTE : PREMIUM_PALETTE;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      const tempCanvas = document.createElement('canvas');
+      const ctx = tempCanvas.getContext('2d');
+      tempCanvas.width = w; tempCanvas.height = h;
+      ctx.drawImage(img, 0, 0, w, h);
+      const imageData = ctx.getImageData(0, 0, w, h);
+      const data = imageData.data;
+
+      for (let i = 0; i < data.length; i += 4) {
+        const rgb = [data[i], data[i + 1], data[i + 2]];
+        const c = closestColor(rgb, palette);
+        data[i] = c[0];
+        data[i + 1] = c[1];
+        data[i + 2] = c[2];
+      }
+
+      ctx.putImageData(imageData, 0, 0);
+      const displayCanvas = document.getElementById('canvas');
+      displayCanvas.width = displayCanvas.height = displayCanvas.parentElement.clientWidth;
+      const displayCtx = displayCanvas.getContext('2d');
+      displayCtx.imageSmoothingEnabled = false;
+      displayCtx.drawImage(tempCanvas, 0, 0, displayCanvas.width, displayCanvas.height);
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+</script>
+</body>
+</html>
