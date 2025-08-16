@@ -159,17 +159,14 @@ footer {
 </footer>
 
 <script>
-// HitCounter
-fetch('https://hitcounter.pythonanywhere.com/count/hvskxr.svg')
-  .then(res => res.text())
-  .then(svg => {
-    const countMatch = svg.match(/>(\\d+)<\\/text>/);
-    const count = countMatch ? countMatch[1] : '—';
-    document.getElementById('visitor-count').innerText = `Visitors: ${count}`;
+// counter
+const ns="WPlace-ImageConverter"
+fetch(`https://api.countapi.xyz/hit/${ns}/visits`)
+  .then(r=>r.json()).then(d=>{
+    document.getElementById("visitor-count").innerText="Visitors: "+d.value
+  }).catch(()=>{
+    document.getElementById("visitor-count").innerText="Visitors: error"
   })
-  .catch(() => {
-    document.getElementById('visitor-count').innerText = 'Visitors: error';
-  });
 
 // palette
 const freeCols=[
