@@ -114,7 +114,6 @@ footer {
   color: #94a3b8;
   text-align: center;
 }
-#visitor-count { margin-bottom:6px;font-weight:bold;color:#e2e8f0; }
 </style>
 </head>
 <body>
@@ -154,20 +153,10 @@ footer {
 </div>
 
 <footer>
-  <div id="visitor-count">Visitors: ...</div>
   <p>© Hvskxr</p>
 </footer>
 
 <script>
-// counter
-const ns="WPlace-ImageConverter"
-fetch(`https://api.countapi.xyz/hit/${ns}/visits`)
-  .then(r=>r.json()).then(d=>{
-    document.getElementById("visitor-count").innerText="Visitors: "+d.value
-  }).catch(()=>{
-    document.getElementById("visitor-count").innerText="Visitors: error"
-  })
-
 // palette
 const freeCols=[
   '#000','#3c3c3c','#787878','#d2d2d2','#fff','#600018','#ed1c24','#ff7f27',
@@ -198,7 +187,7 @@ function nearCol(rgb,pal){
   return pick
 }
 
-// dom
+// DOM
 const fileInput=document.getElementById('imgFile')
 const orig=document.getElementById('orig')
 const cv=document.getElementById('canvas')
