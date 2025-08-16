@@ -5,121 +5,116 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WPLACE Pixel Converter</title>
 <style>
-body{
-    font-family:'Inter','Segoe UI',sans-serif;
-    margin:0;
-    padding:20px;
-    background:radial-gradient(circle at top left,#1e293b,#0f172a);
-    color:#f1f5f9;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
+body {
+  font-family: 'Inter','Segoe UI',sans-serif;
+  margin: 0;
+  padding: 20px;
+  background: radial-gradient(circle at top left,#1e293b,#0f172a);
+  color: #f1f5f9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
 }
 
-h1{
-    margin-bottom:20px;
-    font-weight:500;
+h1 {
+  margin-bottom: 20px;
+  font-weight: 500;
+  font-size: clamp(18px,4vw,28px);
+  text-align: center;
 }
 
-.controls{
-    margin-bottom:20px;
-    background:rgba(255,255,255,0.05);
-    padding:20px;
-    border-radius:12px;
-    display:flex;
-    flex-direction:column;
-    gap:12px;
-    width:100%;
-    max-width:500px;
+.controls {
+  margin-bottom: 20px;
+  background: rgba(255,255,255,0.05);
+  padding: 20px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 500px;
 }
 
-.controls label{
-    font-size:14px;
-    font-weight:500;
-    display:flex;
-    flex-direction:column;
-    gap:4px;
+.controls label {
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .controls input,
 .controls select,
-.controls button{
-    width:100%;
-    padding:10px;
-    border:none;
-    border-radius:6px;
-    font-size:14px;
-    background:rgba(255,255,255,0.1);
-    color:#f1f5f9;
-    outline:none;
-    box-sizing:border-box;
+.controls button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  background: rgba(255,255,255,0.1);
+  color: #f1f5f9;
+  outline: none;
+  box-sizing: border-box;
 }
 
-.controls select{
-    background:rgba(255,255,255,0.15);
-    color:#f1f5f9;
+.controls select { background: rgba(255,255,255,0.15); }
+.controls option { color: #000; background: #fff; }
+
+.controls button {
+  background: linear-gradient(90deg,#38bdf8,#3b82f6);
+  font-weight: 600;
+  transition: .3s;
+  cursor: pointer;
+}
+.controls button:hover {
+  transform: translateY(-1px);
+  background: linear-gradient(90deg,#0ea5e9,#2563eb);
 }
 
-.controls option{
-    color:#000;
-    background:#fff;
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 1000px;
 }
 
-.controls button{
-    background:linear-gradient(90deg,#38bdf8,#3b82f6);
-    font-weight:600;
-    transition:.3s;
-    cursor:pointer;
+.preview-box {
+  background: rgba(255,255,255,0.05);
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  aspect-ratio: 1/1;
+  flex: 1 1 45%;
+  min-width: 250px;
+  max-width: 400px;
 }
 
-.controls button:hover{
-    transform:translateY(-1px);
-    background:linear-gradient(90deg,#0ea5e9,#2563eb);
+.preview-box .title {
+  text-align: center;
+  font-size: 14px;
+  color: #f1f5f9;
+  margin-bottom: 8px;
 }
 
-.container{
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:center;
-    gap:20px;
-    width:100%;
-    max-width:1000px;
+canvas,img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+  image-rendering: pixelated;
 }
 
-.preview-box{
-    background:rgba(255,255,255,0.05);
-    border-radius:12px;
-    padding:10px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:flex-start;
-    aspect-ratio:1/1;
-    flex:1 1 45%;
-    min-width:250px;
+footer {
+  margin-top: 30px;
+  font-size: 12px;
+  color: #94a3b8;
+  text-align: center;
 }
-
-.preview-box .title{
-    text-align:center;
-    font-size:14px;
-    color:#f1f5f9;
-    margin-bottom:8px;
-}
-
-canvas,
-img{
-    width:100%;
-    height:100%;
-    object-fit:contain;
-    border-radius:8px;
-    image-rendering:pixelated;
-}
-
-footer{
-    margin-top:30px;
-    font-size:12px;
-    color:#94a3b8;
-}
+#visitor-count { margin-bottom:6px;font-weight:bold;color:#e2e8f0; }
 </style>
 </head>
 <body>
@@ -135,8 +130,8 @@ footer{
   <label>Image:
     <input type="file" id="imgFile" accept="image/*">
   </label>
-  <label>Width: <input type="number" id="w" value="50"></label>
-  <label>Height: <input type="number" id="h" value="50"></label>
+  <label>Width:<input type="number" id="w" value="50"></label>
+  <label>Height:<input type="number" id="h" value="50"></label>
   <label>Mode:
     <select id="mode">
       <option value="none">None</option>
@@ -150,111 +145,126 @@ footer{
 <div class="container">
   <div class="preview-box">
     <div class="title">Before</div>
-    <img id="orig" alt="Original Image">
+    <img id="orig" alt="Original">
   </div>
   <div class="preview-box">
     <div class="title">After</div>
     <canvas id="canvas"></canvas>
   </div>
 </div>
-<footer>© Hvskxr</footer>
+
+<footer>
+  <div id="visitor-count">Visitors: ...</div>
+  <p>© Hvskxr</p>
+</footer>
 
 <script>
-// PALETTES
-const freebieColors = [
+// counter
+const ns="hvskxr-wplace-tool"
+fetch(`https://api.countapi.xyz/hit/${ns}/visits`)
+  .then(r=>r.json()).then(d=>{
+    document.getElementById("visitor-count").innerText="Visitors: "+d.value
+  }).catch(()=>{
+    document.getElementById("visitor-count").innerText="Visitors: error"
+  })
+
+// palette
+const freeCols=[
   '#000','#3c3c3c','#787878','#d2d2d2','#fff','#600018','#ed1c24','#ff7f27',
   '#f6aa09','#f9dd3b','#fffabc','#0eb968','#13e67b','#87ff5e','#0c816e','#10ae82',
   '#13e1be','#60f7f2','#28509e','#4093e4','#6b50f6','#99b1fb','#780c99','#aa38b9',
   '#e09ff9','#cb007a','#ec1f80','#f38da9','#684634','#95682a','#f8b277','transparent'
-].map(h=>h2rgb(h));
+].map(h=>hex2rgb(h))
 
-const premiumStuff = freebieColors.concat([
+const premium=freeCols.concat([
   '#ffb6c1','#add8e6','#90ee90','#ffa500','#800080','#808000','#008080','#ff4500',
   '#c71585','#7fffd4','#ff69b4','#cd5c5c','#40e0d0','#1e90ff','#f5f5dc','#ffe4c4','#ffefd5'
-].map(h=>h2rgb(h)));
+].map(h=>hex2rgb(h)))
 
-// UTILS
-function h2rgb(hexish){
-  if(hexish==='transparent') return [0,0,0,0];
-  let n=parseInt(hexish.slice(1),16);
-  return [(n>>16)&255,(n>>8)&255,n&255];
+// hex→rgb
+function hex2rgb(h){
+  if(h==='transparent') return [0,0,0,0]
+  let n=parseInt(h.slice(1),16)
+  return [(n>>16)&255,(n>>8)&255,n&255]
 }
 
-function closestColor(toMe, palette){
-  let pick=toMe, minDist=Infinity;
-  for(let candidate of palette){
-    let d=Math.hypot(toMe[0]-candidate[0],toMe[1]-candidate[1],toMe[2]-candidate[2]);
-    if(d<minDist){minDist=d; pick=candidate;}
+// nearest
+function nearCol(rgb,pal){
+  let pick=pal[0], min=1e9
+  for(let c of pal){
+    let d=Math.hypot(rgb[0]-c[0],rgb[1]-c[1],rgb[2]-c[2])
+    if(d<min){min=d;pick=c}
   }
-  return pick;
+  return pick
 }
 
-// DOM
-const fileChooser = document.getElementById('imgFile');
-const origImg = document.getElementById('orig');
-const canvasEl = document.getElementById('canvas');
-const ctxEl = canvasEl.getContext('2d');
+// dom
+const fileInput=document.getElementById('imgFile')
+const orig=document.getElementById('orig')
+const cv=document.getElementById('canvas')
+const ctx=cv.getContext('2d')
 
-fileChooser.addEventListener('change', e=>{
-  const f=e.target.files[0];
-  if(!f) return;
-  const reader = new FileReader();
-  reader.onload=ev=>origImg.src=ev.target.result;
-  reader.readAsDataURL(f);
-});
+fileInput.addEventListener('change',e=>{
+  let f=e.target.files[0]; if(!f) return
+  let rd=new FileReader()
+  rd.onload=ev=>orig.src=ev.target.result
+  rd.readAsDataURL(f)
+})
 
-document.getElementById('go').addEventListener('click', ()=>{
-  const f=fileChooser.files[0];
-  if(!f) return alert('Pick a file first.');
-  const w=parseInt(document.getElementById('w').value);
-  const h=parseInt(document.getElementById('h').value);
-  const mode=document.getElementById('mode').value;
-  const palette=document.getElementById('palette').value==='free'?freebieColors:premiumStuff;
+// convert
+document.getElementById('go').addEventListener('click',()=>{
+  let f=fileInput.files[0]; if(!f) return alert('no file')
+  let w=+document.getElementById('w').value
+  let h=+document.getElementById('h').value
+  let m=document.getElementById('mode').value
+  let pal=document.getElementById('palette').value==='free'?freeCols:premium
 
-  const reader=new FileReader();
-  reader.onload=e=>{
-    const img=new Image();
+  let rd=new FileReader()
+  rd.onload=e=>{
+    let img=new Image()
     img.onload=()=>{
-      const miniCanvas=document.createElement('canvas');
-      miniCanvas.width=w; miniCanvas.height=h;
-      const miniCtx=miniCanvas.getContext('2d');
-      miniCtx.drawImage(img,0,0,w,h);
-      const imgData=miniCtx.getImageData(0,0,w,h);
-      const idxList=[];
-      for(let i=0;i<imgData.data.length;i+=4){
-        const rgb=[imgData.data[i],imgData.data[i+1],imgData.data[i+2]];
-        const c=closestColor(rgb,palette);
-        imgData.data[i]=c[0]; imgData.data[i+1]=c[1]; imgData.data[i+2]=c[2];
-        idxList.push(palette.findIndex(p=>p[0]===c[0]&&p[1]===c[1]&&p[2]===c[2]));
+      let tmpCv=document.createElement('canvas')
+      tmpCv.width=w; tmpCv.height=h
+      let tmpCtx=tmpCv.getContext('2d')
+      tmpCtx.drawImage(img,0,0,w,h)
+
+      let d=tmpCtx.getImageData(0,0,w,h)
+      let idx=[]
+      for(let i=0;i<d.data.length;i+=4){
+        let rgb=[d.data[i],d.data[i+1],d.data[i+2]]
+        let c=nearCol(rgb,pal)
+        d.data[i]=c[0]; d.data[i+1]=c[1]; d.data[i+2]=c[2]
+        idx.push(pal.findIndex(p=>p[0]===c[0]&&p[1]===c[1]&&p[2]===c[2]))
       }
-      miniCtx.putImageData(imgData,0,0);
+      tmpCtx.putImageData(d,0,0)
 
-      const scale=30;
-      canvasEl.width=w*scale; canvasEl.height=h*scale;
-      ctxEl.imageSmoothingEnabled=false;
-      ctxEl.clearRect(0,0,canvasEl.width,canvasEl.height);
-      ctxEl.drawImage(miniCanvas,0,0,canvasEl.width,canvasEl.height);
+      let s=30
+      cv.width=w*s; cv.height=h*s
+      ctx.imageSmoothingEnabled=false
+      ctx.clearRect(0,0,cv.width,cv.height)
+      ctx.drawImage(tmpCv,0,0,cv.width,cv.height)
 
-      if(mode==='grid'||mode==='num-grid'){
-        ctxEl.strokeStyle='rgba(255,255,255,0.3)'; ctxEl.lineWidth=1;
-        for(let x=0;x<=w;x++){ctxEl.beginPath();ctxEl.moveTo(x*scale,0);ctxEl.lineTo(x*scale,h*scale);ctxEl.stroke();}
-        for(let y=0;y<=h;y++){ctxEl.beginPath();ctxEl.moveTo(0,y*scale);ctxEl.lineTo(w*scale,y*scale);ctxEl.stroke();}
+      if(m==='grid'||m==='num-grid'){
+        ctx.strokeStyle='rgba(255,255,255,0.3)'; ctx.lineWidth=1
+        for(let x=0;x<=w;x++){ctx.beginPath();ctx.moveTo(x*s,0);ctx.lineTo(x*s,h*s);ctx.stroke()}
+        for(let y=0;y<=h;y++){ctx.beginPath();ctx.moveTo(0,y*s);ctx.lineTo(w*s,y*s);ctx.stroke()}
       }
-
-      if(mode==='num-grid'){
-        ctxEl.font=`${scale/2}px monospace`; ctxEl.fillStyle='#fff';
-        ctxEl.textAlign='center'; ctxEl.textBaseline='middle';
+      if(m==='num-grid'){
+        ctx.font=`${s/2}px monospace`
+        ctx.fillStyle='#fff'
+        ctx.textAlign='center'
+        ctx.textBaseline='middle'
         for(let y=0;y<h;y++){
           for(let x=0;x<w;x++){
-            ctxEl.fillText(idxList[y*w+x],x*scale+scale/2,y*scale+scale/2);
+            ctx.fillText(idx[y*w+x],x*s+s/2,y*s+s/2)
           }
         }
       }
-    };
-    img.src=e.target.result;
-  };
-  reader.readAsDataURL(f);
-});
+    }
+    img.src=e.target.result
+  }
+  rd.readAsDataURL(f)
+})
 </script>
 </body>
 </html>
