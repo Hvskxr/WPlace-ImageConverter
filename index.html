@@ -237,6 +237,11 @@ document.getElementById('go').addEventListener('click',()=>{
         ctx.strokeStyle='rgba(255,255,255,0.3)'; ctx.lineWidth=1
         for(let x=0;x<=w;x++){ctx.beginPath();ctx.moveTo(x*s,0);ctx.lineTo(x*s,h*s);ctx.stroke()}
         for(let y=0;y<=h;y++){ctx.beginPath();ctx.moveTo(0,y*s);ctx.lineTo(w*s,y*s);ctx.stroke()}
+
+        ctx.strokeStyle='rgba(255,255,255,0.7)'
+        ctx.lineWidth=3
+        for(let x=0;x<=w;x+=16){ctx.beginPath();ctx.moveTo(x*s,0);ctx.lineTo(x*s,h*s);ctx.stroke()}
+        for(let y=0;y<=h;y+=16){ctx.beginPath();ctx.moveTo(0,y*s);ctx.lineTo(w*s,y*s);ctx.stroke()}
       }
       if(m==='num-grid'){
         ctx.font=`${s/2}px monospace`
@@ -257,3 +262,4 @@ document.getElementById('go').addEventListener('click',()=>{
 </script>
 </body>
 </html>
+
